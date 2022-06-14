@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        // 클래서.매서드() => Java
+
+        // 함수() => Javascript, Python
+        function sumValue() {
+            let value1 = document.getElementById("value1").value;
+            let value2 = document.getElementById("value2").value;
+            document.getElementById("result").value = parseFloat(value1) + parseFloat(value2);
+        }
+
+        function minusValue() {
+            let value3 = document.getElementById("value3").value;
+            let value4 = document.getElementById("value4").value;
+            document.getElementById("result2").value = parseFloat(value3) - parseFloat(value4);
+        }
+
+        function timesValue() {
+            let value5 = document.getElementById("value5").value;
+            let value6 = document.getElementById("value6").value;
+            document.getElementById("result3").value = parseFloat(value5) * parseFloat(value6);
+        }
+
+        function dividedByValue() {
+            let value7 = document.getElementById("value7").value;
+            let value8 = document.getElementById("value8").value;
+            document.getElementById("result4").value = parseFloat(value7) / parseFloat(value8);
+        }
+
+        function exponentValue() {
+            let value9 = document.getElementById("value9").value;
+            let value10 = document.getElementById("value10").value;
+            document.getElementById("result5").value = Math.pow(parseFloat(value9), parseFloat(value10));
+        }
+
+        function sinValue() {
+            let value11 = document.getElementById("value11").value;
+            document.getElementById("result6").value = Math.sin(parseInt(value11)) / 180 * Math.PI;
+        }
+    </script>
+</head>
+
+
+<body>
+    <h1>
+        Advanced Calculator
+    </h1>
+    <!-- addition -->
+    Addition <br />
+    <input type = "text" id = "value1" />
+     &ensp; + &ensp;
+    <input type = "text" id = "value2" />
+    &ensp; = &emsp;
+    <input type = "text" id = "result" />
+    <br />
+    <button id = "btnPlus" onclick="sumValue()">plus</button>
+    <br /> <br />
+
+    <!-- subtraction -->
+    Subtraction <br />
+    <input type = "text" id = "value3" />
+    &ensp; - &ensp;
+    <input type = "text" id = "value4" />
+    &ensp; = &emsp;
+    <input type = "text" id = "result2" />
+    <br />
+    <button id = "btnMinus" onclick="minusValue()">minus</button>
+    <br /> <br />
+
+    <!-- Multiplication -->
+    Multiplication <br />
+    <input type = "text" id = "value5" />
+    &ensp; * &ensp;
+    <input type = "text" id = "value6" />
+    &ensp; = &emsp;
+    <input type = "text" id = "result3" />
+    <br />
+    <button id = "btnTimes" onclick="timesValue()">times</button>
+    <br /> <br />
+
+    <!-- Division -->
+    Division <br />
+    <input type = "text" id = "value7" />
+    &ensp; / &ensp;
+    <input type = "text" id = "value8" />
+    &ensp; = &emsp;
+    <input type = "text" id = "result4" />
+    <br />
+    <button id = "btnDividedBy" onclick="dividedByValue()">divided by</button>
+    <br /> <br />
+
+    <!-- Exponent -->
+    Exponent <br />
+    <input type = "text" id = "value9" />
+    &ensp; ^ &ensp;
+    <input type = "text" id = "value10" />
+    &ensp; = &emsp;
+    <input type = "text" id = "result5" />
+    <br />
+    <button id = "btnToThePowerOf" onclick="exponentValue()">to the power of</button>
+    <br /> <br />
+
+    <!-- Sin -->
+    Sin (in degrees) <br />
+    <input type = "text" id = "value11" />
+    &ensp; = &emsp;
+    <input type = "text" id = "result6" />
+    <br />
+    <button id = "btnSin" onclick="sinValue()">sin</button>
+    <br /> <br />
+
+
+</body>
+</html>
