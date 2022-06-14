@@ -39,7 +39,18 @@
 
         function sinValue() {
             let value11 = document.getElementById("value11").value;
-            document.getElementById("result6").value = Math.sin(parseInt(value11)) / 180 * Math.PI;
+            if (value11 % 180 == 0) {
+                document.getElementById("result6").value = 0;
+            } else {
+                document.getElementById("result6").value = Math.sin(parseFloat(value11) * Math.PI / 180);
+            }
+        }
+
+        function logValue() {
+            let value12 = document.getElementById("value12").value;
+            let value13 = document.getElementById("value13").value;
+            const answer = Math.log(value13) / Math.log(value12);
+            document.getElementById("result7").value = answer.toFixed(4);
         }
     </script>
 </head>
@@ -104,13 +115,26 @@
     <button id = "btnToThePowerOf" onclick="exponentValue()">to the power of</button>
     <br /> <br />
 
-    <!-- Sin -->
-    Sin (in degrees) <br />
+    <!-- Sine -->
+    Sine (in degrees) <br />
     <input type = "text" id = "value11" />
     &ensp; = &emsp;
     <input type = "text" id = "result6" />
     <br />
     <button id = "btnSin" onclick="sinValue()">sin</button>
+    <br /> <br />
+
+    <!-- logarithms -->
+    Logarithms <br />
+    log &ensp;
+    <input type = "text" id = "value12" />
+    &ensp;
+    <input type = "text" id = "value13" />
+    &ensp; = &emsp;
+
+    <input type = "text" id = "result7" />
+    <br />
+    <button id = "btnLog" onclick="logValue()">log</button>
     <br /> <br />
 
 
