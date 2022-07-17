@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>First 100 books from the list</title>
+
+</head>
+<body>
+TITLE &emsp; &emsp; &emsp; AUTHOR &emsp; PRICE <br />
+<tr th:each="book: ${newList}">
+    <td th:text="${book.title}" /> &emsp;
+    <td th:text="${book.author}" /> &emsp;
+    <td th:text="${book.price}" /> <br />
+</tr>
+
+</body>
+</html>
