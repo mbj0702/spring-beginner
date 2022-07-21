@@ -100,8 +100,14 @@ public class BookController {
     @RequestMapping("/book/get/list/{pageNumber}")
     public String listByHundred(@PathVariable int pageNumber, Model model) {
 
+        List<Book> bookList = bookService.listByHundred(pageNumber);
+
         // Sends book information to the front end
-        model.addAttribute("newList", bookService.listByHundred(pageNumber));
+        model.addAttribute("newList", bookList);
+
+        if (bookList.size() == 0) {
+            return "bookList";
+        }
 
         return "frontHundred";
     }

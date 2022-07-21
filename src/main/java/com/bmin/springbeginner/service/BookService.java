@@ -36,10 +36,9 @@ public class BookService {
     public Book findByTitle(String title) {
         // finds the price of the book
         Book book = new Book();
-        int count = 0;
+
         for (int i = 0; i < bookList.size(); i++) {
             if (bookList.get(i).getTitle().equals(title)) {
-                count = i;
                 DecimalFormat numberFormat = new DecimalFormat("#.00");
                 book = bookList.get(i);
                 log.info( "price is {}.", numberFormat.format(bookList.get(i).getPrice()) );
@@ -99,16 +98,35 @@ public class BookService {
 
     // displays books (0 ~ 99)
     public List<Book> listByHundred(int pageNumber) {
-        int start = pageNumber * 100 - 100;
-        int size = pageNumber * 100;
-        int end = size - 1;
+        int start = (pageNumber - 1) * 100;
+        int end = pageNumber * 100 - 1;
+//        int size = 100;
 
         log.info("From book" + start + " to book" + end);
 
-        // a new list that with size of 100
-        List<Book> newList = new ArrayList<>(100);
+        // gets maximum available page
+        int countPages = 1;
+        int lastPageSize = bookList.size();
 
-        for (int i = start; i < size; i++) {
+        while (lastPageSize > 100) {
+            lastPageSize = lastPageSize - 100;
+            countPages++;
+        }
+
+        // checks if given page number is correct
+        if (pageNumber == 0 || pageNumber > countPages) {
+            return new ArrayList<Book>();
+        }
+
+        // checks if given page is the last page
+        if (bookList.size() % 100 != 0 && pageNumber == countPages) {
+                end = bookList.size() - 1;
+        }
+
+        // a new list that with size of 100
+        List<Book> newList = new ArrayList<>();
+
+        for (int i = start; i <= end; i++) {
             newList.add(bookList.get(i));
             log.info(bookList.get(i).getTitle());
         }
