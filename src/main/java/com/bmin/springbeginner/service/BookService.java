@@ -31,7 +31,7 @@ public class BookService {
 
 
     /**
-     * A method that finds books by title
+     * 3. A method that finds books by title
      */
     public Book findByTitle(String title) {
         // finds the price of the book
@@ -49,7 +49,7 @@ public class BookService {
 
 
     /**
-     * 4. Finds the first 100 books in the list.
+     * 4. (a) Finds the first 100 books in the list.
      * URL "" /book/get/front100
      */
     public List<Book> findFirstHundred() {
@@ -65,6 +65,56 @@ public class BookService {
         return newList;
     }
 
+    /**
+     * 4. (b) Finds 100 books per page
+     */
+    // displays books (0 ~ 99)
+    public List<Book> listByHundred(int pageNumber) {
+        int start = (pageNumber - 1) * 100;
+        int end = pageNumber * 100 - 1;
+
+        log.info("From book" + start + " to book" + end);
+
+        // gets maximum available page
+//        int countPages = 1;
+//        int lastPageSize = bookList.size();
+//
+//        while (lastPageSize > 100) {
+//            lastPageSize = lastPageSize - 100;
+//            countPages++;
+//        }
+
+        int countPages = 0;
+
+        // case #1: when the last page has less than 100 books
+        countPages = (bookList.size() / 100) + 1;
+
+        // case #2: when the last page has 100 books
+        if (bookList.size() % 100 == 0) {
+            countPages = bookList.size() / 100;
+        }
+
+
+        // checks if given page number is correct
+        if (pageNumber < 1 || pageNumber > countPages) {
+            return new ArrayList<Book>();
+        }
+
+        // checks if given page is the last page
+        if (bookList.size() % 100 != 0 && pageNumber == countPages) {
+            end = bookList.size() - 1;
+        }
+
+        // a new list that with size of 100
+        List<Book> newList = new ArrayList<>();
+
+        for (int i = start; i <= end; i++) {
+            newList.add(bookList.get(i));
+            log.info(bookList.get(i).getTitle());
+        }
+
+        return newList;
+    }
 
     /**
      * 5. Get title, author, and price from the client
@@ -96,43 +146,7 @@ public class BookService {
     }
 
 
-    // displays books (0 ~ 99)
-    public List<Book> listByHundred(int pageNumber) {
-        int start = (pageNumber - 1) * 100;
-        int end = pageNumber * 100 - 1;
-//        int size = 100;
 
-        log.info("From book" + start + " to book" + end);
-
-        // gets maximum available page
-        int countPages = 1;
-        int lastPageSize = bookList.size();
-
-        while (lastPageSize > 100) {
-            lastPageSize = lastPageSize - 100;
-            countPages++;
-        }
-
-        // checks if given page number is correct
-        if (pageNumber == 0 || pageNumber > countPages) {
-            return new ArrayList<Book>();
-        }
-
-        // checks if given page is the last page
-        if (bookList.size() % 100 != 0 && pageNumber == countPages) {
-                end = bookList.size() - 1;
-        }
-
-        // a new list that with size of 100
-        List<Book> newList = new ArrayList<>();
-
-        for (int i = start; i <= end; i++) {
-            newList.add(bookList.get(i));
-            log.info(bookList.get(i).getTitle());
-        }
-
-        return newList;
-    }
 
 
     /**

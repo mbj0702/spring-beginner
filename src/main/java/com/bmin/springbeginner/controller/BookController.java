@@ -39,7 +39,7 @@ public class BookController {
 
     // http://localhost:8080/book/get/title/Java2InAction
     /**
-     * A method that finds books by title
+     * 3. A method that finds books by title
      */
     @RequestMapping("/book/get/title/{title}")
     public String findByTitle(@PathVariable String title, Model model) {
@@ -53,7 +53,7 @@ public class BookController {
 
 
     /**
-     * 4. Finds the first 100 books in the list.
+     * 4. (a) Finds the first 100 books in the list.
      * URL "" /book/get/front100
      */
     @RequestMapping("/book/get/frontHundred")
@@ -69,34 +69,8 @@ public class BookController {
 
 
     /**
-     * 5. Get title, author, and price from the client
-     *    Make Book object and register the object
-     * Use both GET and POST
-     *  URL -> http://localhost:8080/book/add
+     * 4. (b) Finds 100 books per page
      */
-    @RequestMapping("/book/add")
-    public String bookAdd(@RequestParam String title,
-                          @RequestParam String author,
-                          @RequestParam int price,
-                          Model model) {
-        log.info("TITLE :: " + title + "\nAUTHOR :: " + author + "\nPRICE :: " + price);
-
-        // Sends book information to the front end
-        model.addAttribute("newList", bookService.bookAdd(title, author, price));
-
-        return "bookList";
-    }
-
-
-    @RequestMapping("/book/toAddPage")
-    public String toAddPage() {
-        log.info("On book adding page");
-
-        return "addBook";
-    }
-
-
-    // displays books (0 ~ 99)
     @RequestMapping("/book/get/list/{pageNumber}")
     public String listByHundred(@PathVariable int pageNumber, Model model) {
 
@@ -117,6 +91,35 @@ public class BookController {
     public String bookFind() {
         System.out.println("bookFind");
         return "bookFind";
+    }
+
+
+    /**
+     * 5. Get title, author, and price from the client
+     *    Make Book object and register the object
+     * Use both GET and POST
+     *  RequestParam => http://localhost:8080/book/add?title=Spring&author=bmin&price=1000
+     *  PathVariable => http://localhost:8080/book/add/Spring/bmin/1000
+     */
+    @RequestMapping("/book/add")
+    public String bookAdd(@RequestParam String title,
+                          @RequestParam String author,
+                          @RequestParam int price,
+                          Model model) {
+        log.info("TITLE :: " + title + "\nAUTHOR :: " + author + "\nPRICE :: " + price);
+
+        // Sends book information to the front end
+        model.addAttribute("newList", bookService.bookAdd(title, author, price));
+
+        return "bookList";
+    }
+
+
+    @RequestMapping("/book/toAddPage")
+    public String toAddPage() {
+        log.info("On book adding page");
+
+        return "addBook";
     }
 
 
