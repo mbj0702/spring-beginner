@@ -31,7 +31,7 @@ public class BookService {
 
 
     /**
-     * 3. A method that finds books by title
+     * 1. A method that finds books by title
      */
     public Book findByTitle(String title) {
         // finds the price of the book
@@ -49,15 +49,19 @@ public class BookService {
 
 
     /**
-     * 4. (a) Finds the first 100 books in the list.
+     * 2. (a) Finds the first 100 books in the list.
      * URL "" /book/get/front100
      */
     public List<Book> findFirstHundred() {
         // a new list that with size of 100
         List<Book> newList = new ArrayList<>(100);
+        int listSize = 100;
 
+        if (listSize > bookList.size()) {
+            listSize = bookList.size();
+        }
         // finds the first 100 books from the list
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < listSize; i++) {
             newList.add(bookList.get(i));
             log.info(bookList.get(i).getTitle());
         }
@@ -66,7 +70,7 @@ public class BookService {
     }
 
     /**
-     * 4. (b) Finds 100 books per page
+     * 2. (b) Finds 100 books per page
      */
     // displays books (0 ~ 99)
     public List<Book> listByHundred(int pageNumber) {
@@ -117,7 +121,7 @@ public class BookService {
     }
 
     /**
-     * 5. Get title, author, and price from the client
+     * 3. Get title, author, and price from the client
      *    Make Book object and register the object
      * Use both GET and POST
      *  URL -> http://localhost:8080/book/add
@@ -150,7 +154,7 @@ public class BookService {
 
 
     /**
-     * 6. Get a book that matches title and author of a book in the book list
+     * 4. Get a book that matches title and author of a book in the book list
      *    Change the price of the book
      * Use POST
      *  URL -> http://localhost:8080/book/update/price
@@ -181,7 +185,7 @@ public class BookService {
 
 
     /**
-     * 7. Get book title and author
+     * 5. Get book title and author
      *    Remove the book from the book list
      * use POST
      *  URL -> http://localhost:8080/book/delete
@@ -192,6 +196,7 @@ public class BookService {
             if (bookList.get(i).getTitle().equals(title) &&
                     bookList.get(i).getAuthor().equals(author)) {
                 bookList.remove(bookList.get(i));
+//                bookList.remove(i);
             }
         } // end for
 

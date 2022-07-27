@@ -8,38 +8,24 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
+
 import java.util.List;
-import java.util.stream.IntStream;
 
 @Controller
 @Slf4j
 public class BookController {
-
-//    private static List<Book> bookList = new ArrayList<>();
-
     @Autowired
     BookService bookService;
 
     public BookController() {
-//        IntStream.range(0, 1000)
-//                .forEach(
-//                        i -> {
-//                            Book book = new Book();
-//                            book.setAuthor("Author" + i);
-//                            book.setPrice(i + 100.20);
-//                            book.setTitle("Java" + i + "InAction");
-//                            bookList.add(book);
-//                        });
+
     }
 
 
     // http://localhost:8080/book/get/title/Java2InAction
     /**
-     * 3. A method that finds books by title
+     * 1. A method that finds books by title
      */
     @RequestMapping("/book/get/title/{title}")
     public String findByTitle(@PathVariable String title, Model model) {
@@ -53,7 +39,7 @@ public class BookController {
 
 
     /**
-     * 4. (a) Finds the first 100 books in the list.
+     * 2. (a) Finds the first 100 books in the list.
      * URL "" /book/get/front100
      */
     @RequestMapping("/book/get/frontHundred")
@@ -69,7 +55,7 @@ public class BookController {
 
 
     /**
-     * 4. (b) Finds 100 books per page
+     * 2. (b) Finds 100 books per page
      */
     @RequestMapping("/book/get/list/{pageNumber}")
     public String listByHundred(@PathVariable int pageNumber, Model model) {
@@ -95,7 +81,7 @@ public class BookController {
 
 
     /**
-     * 5. Get title, author, and price from the client
+     * 3. Get title, author, and price from the client
      *    Make Book object and register the object
      * Use both GET and POST
      *  RequestParam => http://localhost:8080/book/add?title=Spring&author=bmin&price=1000
@@ -103,7 +89,7 @@ public class BookController {
      */
     @RequestMapping("/book/add")
     public String bookAdd(@RequestParam String title,
-                          @RequestParam String author,
+                          @RequestParam(required = false) String author, // false -> can be empty string
                           @RequestParam int price,
                           Model model) {
         log.info("TITLE :: " + title + "\nAUTHOR :: " + author + "\nPRICE :: " + price);
@@ -124,7 +110,7 @@ public class BookController {
 
 
     /**
-     * 6. Get a book that matches title and author in the book list
+     * 4. Get a book that matches title and author in the book list
      *    Change the price of the book
      * Use POST
      *  URL -> http://localhost:8080/book/update/price
@@ -135,16 +121,15 @@ public class BookController {
         return "changeBook";
     }
 
-
     @RequestMapping("/book/change")
-    public String bookChange(@RequestParam String title,
-                             @RequestParam String author,
-                             @RequestParam int price,
-                             Model model) {
-
+    public String bookChangeInfo(@RequestParam String title,
+                                 @RequestParam String author,
+                                 @RequestParam int price,
+                                 Model model) {
         Book book = bookService.bookChange(title, author, price);
         if (book.getTitle().equals("N/A") && book.getAuthor().equals("N/A")) {
-            return "bookList";
+            model.addAttribute("rtnMsg", "변경된 내용이 없습니다.");
+            return "bookInfo";
         }
 
         // Sends book information to the front end
@@ -155,7 +140,7 @@ public class BookController {
 
 
     /**
-     * 7. Get book title and author
+     * 5. Get book title and author
      *    Remove the book from the book list
      * use POST
      *  URL -> http://localhost:8080/book/delete
