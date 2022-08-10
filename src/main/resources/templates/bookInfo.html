@@ -10,7 +10,8 @@
 </head>
 <body>
 
-<span th:if="${rtnMsg}">${rtnMsg}</span>
+<span th:text="${rtnMsg}"></span>
+<br />
 Title :: <input type="text" th:value="${book.title}"> <br />
 Author :: <input type="text" th:value="${book.author}"> <br />
 Price :: <input type="text" th:value="${book.price}"> <br />

@@ -1,10 +1,9 @@
 package com.bmin.springbeginner.service;
 
-import com.bmin.springbeginner.vo.Book;
+import com.bmin.springbeginner.entity.Book;
+import com.bmin.springbeginner.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
 import lombok.extern.slf4j.Slf4j;
 
 import java.text.DecimalFormat;
@@ -15,18 +14,12 @@ import java.util.stream.IntStream;
 @Service
 @Slf4j
 public class BookService {
-    private static List<Book> bookList = new ArrayList<>();
+
+    @Autowired
+    private BookRepository bookRepository;
 
     public BookService() {
-        IntStream.range(0, 1000)
-                .forEach(
-                        i -> {
-                            Book book = new Book();
-                            book.setAuthor("Author" + i);
-                            book.setPrice(i + 100.20);
-                            book.setTitle("Java" + i + "InAction");
-                            bookList.add(book);
-                        });
+
     } // end BookService
 
 
@@ -34,17 +27,27 @@ public class BookService {
      * 1. A method that finds books by title
      */
     public Book findByTitle(String title) {
-        // finds the price of the book
-        Book book = new Book();
+        //final List<Book> findAllBook = (ArrayList)bookRepository.findAll();
 
-        for (int i = 0; i < bookList.size(); i++) {
-            if (bookList.get(i).getTitle().equals(title)) {
-                DecimalFormat numberFormat = new DecimalFormat("#.00");
-                book = bookList.get(i);
-                log.info( "price is {}.", numberFormat.format(bookList.get(i).getPrice()) );
-            }
-        }
-        return book;
+        // finds the price of the book
+
+        return bookRepository.findByTitle(title)
+                .stream()
+                .findFirst()
+                .orElse(new Book());
+
+        // using for loop from the list of books
+
+//        Book book = new Book();
+//
+//        for (int i = 0; i < findAllBook.size(); i++) {
+//            if (findAllBook.get(i).getTitle().equals(title)) {
+//                DecimalFormat numberFormat = new DecimalFormat("#.00");
+//                book = findAllBook.get(i);
+//                log.info( "price is {}.", numberFormat.format(findAllBook.get(i).getPrice()) );
+//            }
+//        }
+//        return book;
     }
 
 
@@ -53,17 +56,19 @@ public class BookService {
      * URL "" /book/get/front100
      */
     public List<Book> findFirstHundred() {
+        final List<Book> findAllBook = (ArrayList)bookRepository.findAll();
+
         // a new list that with size of 100
         List<Book> newList = new ArrayList<>(100);
         int listSize = 100;
 
-        if (listSize > bookList.size()) {
-            listSize = bookList.size();
+        if (listSize > findAllBook.size()) {
+            listSize = findAllBook.size();
         }
         // finds the first 100 books from the list
         for (int i = 0; i < listSize; i++) {
-            newList.add(bookList.get(i));
-            log.info(bookList.get(i).getTitle());
+            newList.add(findAllBook.get(i));
+            log.info(findAllBook.get(i).getTitle());
         }
 
         return newList;
@@ -74,6 +79,8 @@ public class BookService {
      */
     // displays books (0 ~ 99)
     public List<Book> listByHundred(int pageNumber) {
+        final List<Book> findAllBook = (ArrayList)bookRepository.findAll();
+
         int start = (pageNumber - 1) * 100;
         int end = pageNumber * 100 - 1;
 
@@ -91,11 +98,11 @@ public class BookService {
         int countPages = 0;
 
         // case #1: when the last page has less than 100 books
-        countPages = (bookList.size() / 100) + 1;
+        countPages = (findAllBook.size() / 100) + 1;
 
         // case #2: when the last page has 100 books
-        if (bookList.size() % 100 == 0) {
-            countPages = bookList.size() / 100;
+        if (findAllBook.size() % 100 == 0) {
+            countPages = findAllBook.size() / 100;
         }
 
 
@@ -105,20 +112,21 @@ public class BookService {
         }
 
         // checks if given page is the last page
-        if (bookList.size() % 100 != 0 && pageNumber == countPages) {
-            end = bookList.size() - 1;
+        if (findAllBook.size() % 100 != 0 && pageNumber == countPages) {
+            end = findAllBook.size() - 1;
         }
 
         // a new list that with size of 100
         List<Book> newList = new ArrayList<>();
 
         for (int i = start; i <= end; i++) {
-            newList.add(bookList.get(i));
-            log.info(bookList.get(i).getTitle());
+            newList.add(findAllBook.get(i));
+            log.info(findAllBook.get(i).getTitle());
         }
 
         return newList;
     }
+
 
     /**
      * 3. Get title, author, and price from the client
@@ -126,9 +134,11 @@ public class BookService {
      * Use both GET and POST
      *  URL -> http://localhost:8080/book/add
      */
-    public List<Book> bookAdd(String title, String author, int price) {
+    public List<Book> bookAdd(String title, String author, double price) {
+        final List<Book> findAllBook = (ArrayList)bookRepository.findAll();
+
         if (hasSameBook(title, author, price)) {
-            return bookList;
+            return findAllBook;
         }
 
         Book newBook = new Book();
@@ -136,21 +146,20 @@ public class BookService {
         newBook.setAuthor(author);
         newBook.setPrice(price);
 
-        bookList.add(newBook);
+        findAllBook.add(newBook);
 
         List<Book> newList = new ArrayList<Book>();
 
-        for (int i = bookList.size() - 1; i >= 0; i--) {
-            newList.add(bookList.get(i));
+        for (int i = findAllBook.size() - 1; i >= 0; i--) {
+            newList.add(findAllBook.get(i));
         }
 
         log.info(newList.get(newList.size() - 1).getTitle());
 
+        bookRepository.save(newBook);
+
         return newList;
     }
-
-
-
 
 
     /**
@@ -159,18 +168,20 @@ public class BookService {
      * Use POST
      *  URL -> http://localhost:8080/book/update/price
      */
-    public Book bookChange(String title, String author, int price) {
+    public Book bookChange(String title, String author, double price) {
+        final List<Book> findAllBook = (ArrayList)bookRepository.findAll();
+
         Book book = new Book();
         boolean hasSame = false;
 
-        for (int i = 0; i < bookList.size(); i++) {
-            if (bookList.get(i).getTitle().equals(title)
-                    && bookList.get(i).getAuthor().equals(author)) {
+        for (int i = 0; i < findAllBook.size(); i++) {
+            if (findAllBook.get(i).getTitle().equals(title)
+                    && findAllBook.get(i).getAuthor().equals(author)) {
 
-                bookList.get(i).setPrice(price);
-                book = bookList.get(i);
+                findAllBook.get(i).setPrice(price);
+                book = findAllBook.get(i);
                 hasSame = true;
-                log.info("new price :: " + bookList.get(i).getPrice());
+                log.info("new price :: " + findAllBook.get(i).getPrice());
             }
         } // end for
 
@@ -178,6 +189,8 @@ public class BookService {
             book.setTitle("N/A");
             book.setAuthor("N/A");
             book.setPrice(-1);
+        } else {
+            bookRepository.save(book);
         }
 
         return book;
@@ -191,24 +204,32 @@ public class BookService {
      *  URL -> http://localhost:8080/book/delete
      */
     public List<Book> bookDelete(String title, String author) {
+        final List<Book> findAllBook = (ArrayList)bookRepository.findAll();
+        Book book = new Book();
 
-        for (int i = 0; i < bookList.size(); i++) {
-            if (bookList.get(i).getTitle().equals(title) &&
-                    bookList.get(i).getAuthor().equals(author)) {
-                bookList.remove(bookList.get(i));
+        for (int i = 0; i < findAllBook.size(); i++) {
+            if (findAllBook.get(i).getTitle().equals(title) &&
+                    findAllBook.get(i).getAuthor().equals(author)) {
+                book = findAllBook.get(i);
+                findAllBook.remove(i);
 //                bookList.remove(i);
+
             }
         } // end for
 
-        return bookList;
+        bookRepository.delete(book);
+
+        return findAllBook;
     }
 
 
     // helper methods
-    private boolean hasSameBook(String title, String author, int price) {
-        for (int i = 0; i < bookList.size(); i++) {
-            if (bookList.get(i).getTitle().equals(title)
-                    && bookList.get(i).getAuthor().equals(author)) {
+    private boolean hasSameBook(String title, String author, double price) {
+        final List<Book> findAllBook = (ArrayList)bookRepository.findAll();
+
+        for (int i = 0; i < findAllBook.size(); i++) {
+            if (findAllBook.get(i).getTitle().equals(title)
+                    && findAllBook.get(i).getAuthor().equals(author)) {
                 return true;
             }
         } // end for

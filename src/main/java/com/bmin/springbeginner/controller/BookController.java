@@ -1,7 +1,7 @@
 package com.bmin.springbeginner.controller;
 
 import com.bmin.springbeginner.service.BookService;
-import com.bmin.springbeginner.vo.Book;
+import com.bmin.springbeginner.entity.Book;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -90,7 +90,7 @@ public class BookController {
     @RequestMapping("/book/add")
     public String bookAdd(@RequestParam String title,
                           @RequestParam(required = false) String author, // false -> can be empty string
-                          @RequestParam int price,
+                          @RequestParam double price,
                           Model model) {
         log.info("TITLE :: " + title + "\nAUTHOR :: " + author + "\nPRICE :: " + price);
 
@@ -124,11 +124,12 @@ public class BookController {
     @RequestMapping("/book/change")
     public String bookChangeInfo(@RequestParam String title,
                                  @RequestParam String author,
-                                 @RequestParam int price,
+                                 @RequestParam double price,
                                  Model model) {
         Book book = bookService.bookChange(title, author, price);
         if (book.getTitle().equals("N/A") && book.getAuthor().equals("N/A")) {
-            model.addAttribute("rtnMsg", "변경된 내용이 없습니다.");
+            model.addAttribute("book", book);
+            model.addAttribute("rtnMsg", "No changes has been made \n");
             return "bookInfo";
         }
 
